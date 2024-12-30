@@ -12,6 +12,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import SinglePurchase from '../purchase/SinglePurchase';
 import AddPrice from '../addprice/AddPrice';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import Price from '../addprice/Price';
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -67,9 +68,9 @@ const DashboardLayout = () => {
     },
     {
       label: "Price",
-      path: 'addprice',
+      path: 'price',
       icon: <CurrencyRupeeIcon />,
-      component: <AddPrice />,
+      component: <Price />,
     },
   ];
 
@@ -252,7 +253,7 @@ const DashboardLayout = () => {
           <Route path="/memberdetail/:id" element={<MemberProfile />} /> */}
           <Route path="/purchase" element={<PurchaseHome />} />
           <Route path="/purchase/:request_code" element={<SinglePurchase />} />
-          <Route path="/addprice" element={<AddPrice />} />
+          <Route path="/price" element={<Price />} />
 
         </Routes>
       </div>

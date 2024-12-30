@@ -5,12 +5,12 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 import EditIcon from '@mui/icons-material/Edit';
-import { Autocomplete, TextField, CircularProgress, Typography, FormControl, InputLabel, Select, MenuItem, IconButton, Button, Card, CardHeader, Box } from '@mui/material';
+import { Autocomplete, TextField, CircularProgress, Typography, FormControl, InputLabel, Select, MenuItem, IconButton, Button, Card, CardHeader, Box, DialogTitle } from '@mui/material';
 
 const AddPrice = () => {
 
     const [products, setProducts] = useState([]);
-    
+
     const [submittedData, setSubmittedData] = useState([]);  // Ensure it's an empty array initially
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -146,9 +146,9 @@ const AddPrice = () => {
             price: row.price,
             quote_price: row.quote_price,
         }));
-    
+
         const data = { products: productsData };
-    
+
         try {
             const response = await axios.post('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', data, {
                 headers: {
@@ -156,9 +156,8 @@ const AddPrice = () => {
                     'Content-Type': 'application/json',
                 },
             });
-    
-            // Set submittedData directly to the products array from the response
-            setSubmittedData(response.data.products);  // Use response.data.products, not response.data.results
+
+            setSubmittedData(response.data.products);
             Swal.fire({
                 title: 'Success!',
                 text: 'Products have been submitted successfully.',
@@ -175,112 +174,76 @@ const AddPrice = () => {
             });
         }
     };
-    
-    
 
-    // Handle Edit
-    const handleEdit = async (requestId, updatedPrice, updatedQuotePrice) => {
-        const data = { request_id: requestId, price: updatedPrice, quote_price: updatedQuotePrice };
-    
-        try {
-            await axios.put('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', data, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            // Show success alert
-            Swal.fire({
-                title: 'Success!',
-                text: 'Product has been updated successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-            });
-        } catch (error) {
-            console.error('Error editing product:', error);
-            // Show error alert
-            Swal.fire({
-                title: 'Error!',
-                text: 'There was an error editing the product. Please try again.',
-                icon: 'error',
-                confirmButtonText: 'OK',
-            });
-        }
-    };
-    
 
-    // Handle Delete
-    const handleDelete = async (ids) => {
-        try {
-            await axios.delete('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    'Content-Type': 'application/json',
-                },
-                data: { ids },
-            });
-    
-            setSubmittedData(prevData => prevData.filter(product => !ids.includes(product.product_id)));
-    
-            // Show success alert
-            Swal.fire({
-                title: 'Deleted!',
-                text: 'Product(s) have been deleted successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-            });
-        } catch (error) {
-            console.error('Error deleting product:', error);
-            // Show error alert
-            Swal.fire({
-                title: 'Error!',
-                text: 'There was an error deleting the product(s). Please try again.',
-                icon: 'error',
-                confirmButtonText: 'OK',
-            });
-        }
-    };
-    
+    // const handleEdit = async (requestId, updatedPrice, updatedQuotePrice) => {
+    //     const data = { request_id: requestId, price: updatedPrice, quote_price: updatedQuotePrice };
 
-    // Render submitted data as cards
-    const renderSubmittedData = () => {
-        if (!Array.isArray(submittedData) || submittedData.length === 0) {
-            return <Typography>No data available.</Typography>;
-        }
-    
-        return submittedData.map((product, index) => (
-            <Card key={index} sx={{ mb: 2 }}>
-                <CardHeader
-                    title={`Product - ${product.product_id}`}  // Display product_id instead of product_name
-                    action={
-                        <>
-                            <IconButton
-                                color="primary"
-                                onClick={() => handleEdit(product.product_id, product.price, product.quote_price)}
-                            >
-                                <EditIcon />
-                            </IconButton>
-                            <IconButton
-                                color="error"
-                                onClick={() => handleDelete([product.product_id])}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                        </>
-                    }
-                />
-                <Box sx={{ p: 2 }}>
-                    <Typography variant="body1">Price: {product.price}</Typography>
-                    <Typography variant="body1">Quote Price: {product.quote_price}</Typography>
-                </Box>
-            </Card>
-        ));
-    };
-    
-    
+    //     try {
+    //         await axios.put('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', data, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
+
+    //         // Show success alert
+    //         Swal.fire({
+    //             title: 'Success!',
+    //             text: 'Product has been updated successfully.',
+    //             icon: 'success',
+    //             confirmButtonText: 'OK',
+    //         });
+    //     } catch (error) {
+    //         console.error('Error editing product:', error);
+    //         // Show error alert
+    //         Swal.fire({
+    //             title: 'Error!',
+    //             text: 'There was an error editing the product. Please try again.',
+    //             icon: 'error',
+    //             confirmButtonText: 'OK',
+    //         });
+    //     }
+    // };
+
+
+    // // Handle Delete
+    // const handleDelete = async (ids) => {
+    //     try {
+    //         await axios.delete('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', {
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             data: { ids },
+    //         });
+
+    //         setSubmittedData(prevData => prevData.filter(product => !ids.includes(product.product_id)));
+
+    //         // Show success alert
+    //         Swal.fire({
+    //             title: 'Deleted!',
+    //             text: 'Product(s) have been deleted successfully.',
+    //             icon: 'success',
+    //             confirmButtonText: 'OK',
+    //         });
+    //     } catch (error) {
+    //         console.error('Error deleting product:', error);
+    //         // Show error alert
+    //         Swal.fire({
+    //             title: 'Error!',
+    //             text: 'There was an error deleting the product(s). Please try again.',
+    //             icon: 'error',
+    //             confirmButtonText: 'OK',
+    //         });
+    //     }
+    // };
+
+
+
+
     useEffect(() => {
-        
+
         fetchProducts(page);
     }, []);
 
@@ -292,9 +255,7 @@ const AddPrice = () => {
 
     return (
         <div>
-            <Typography variant="h4" gutterBottom className="text-3xl font-semibold mb-6">
-                Add Products Price
-            </Typography>
+            
             <div className="flex flex-col gap-4">
                 {rows.map((row, index) => (
                     <div key={index} className="w-full flex flex-wrap gap-4 relative">
@@ -316,7 +277,7 @@ const AddPrice = () => {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-                            <Autocomplete
+                                <Autocomplete
                                     className="mt-2"
                                     options={products}
                                     getOptionLabel={(option) => option.product_name}
@@ -421,10 +382,6 @@ const AddPrice = () => {
                 </div>
             </div>
 
-            <div>
-                <Typography variant="h5" gutterBottom>Submitted Products</Typography>
-                {renderSubmittedData()}
-            </div>
         </div>
     );
 };

@@ -158,8 +158,8 @@ const AddPurchaseDialog = ({ openDialog, setOpenDialog, quotationData, requestCo
                         src={logo} 
                         style={{ ...styles.image, width: '200px' }}
                     />
-
-                    {/* <Text style={styles.header}>Agri Sarthi</Text> */}
+                    
+                    <Text style={styles.header}>Quotation</Text>
                     {/* <Text style={styles.companyInfo}>
                         Naveen Khushhali Kisan Sewa Kendra
                     </Text> */}
@@ -168,18 +168,22 @@ const AddPurchaseDialog = ({ openDialog, setOpenDialog, quotationData, requestCo
                         <View style={styles.tableHeader}>
                             <Text style={[styles.tableCell]}>S.N.</Text>
                             <Text style={[styles.tableCell]}>Product Name</Text>
-                            <Text style={[styles.tableCell]}>PKT Size</Text>
-                            <Text style={[styles.tableCell]}>Qty</Text>
+                            <Text style={[styles.tableCell]}> Measurement</Text>
+                            <Text style={[styles.tableCell]}>Quantity</Text>
+                            <Text style={[styles.tableCell]}>Variant</Text>
+                            <Text style={[styles.tableCell]}>Brand</Text>
                             {/* <Text style={[styles.tableCell]}>Net Price/Per Ltr</Text> */}
-                            <Text style={[styles.tableCell, styles.tableCellLast]}>Net Amount</Text>
+                            <Text style={[styles.tableCell, styles.tableCellLast]}>Price</Text>
                         </View>
 
                         {quotations.map((item, index) => (
                             <View style={styles.tableRow} key={index}>
                                 <Text style={[styles.tableCell]}>{index + 1}</Text>
                                 <Text style={[styles.tableCell]}>{item.product_name}</Text>
-                                <Text style={[styles.tableCell]}>{item.packet_size || 'N/A'}</Text>
-                                <Text style={[styles.tableCell]}>{item.quantity}</Text>
+                                <Text style={[styles.tableCell]}>{item.measurement_type || 'N/A'}</Text>
+                                <Text style={[styles.tableCell]}>{item.available_quantity}</Text>
+                                <Text style={[styles.tableCell]}>{item.variants}</Text>
+                                <Text style={[styles.tableCell]}>{item.brand}</Text>
                                 {/* <Text style={[styles.tableCell]}>{item.unit_price || '0'}</Text> */}
                                 <Text style={[styles.tableCell, styles.tableCellLast]}>{item.total_price || '0'}</Text>
                             </View>

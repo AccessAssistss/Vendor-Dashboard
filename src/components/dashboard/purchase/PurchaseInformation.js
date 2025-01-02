@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { RemoveRedEye } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useApis } from '../../Api_url';
-import AddPurchaseDialog from './AddPurchaseDialog'; // Import the dialog component
+import AddQuotationDialog from './AddQuotationDialog'; // Import the dialog component
 
 const PurchaseInformation = () => {
     const { postJson, getJson, deleteJson } = useApis();

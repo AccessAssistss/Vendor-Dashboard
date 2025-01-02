@@ -3,7 +3,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Typography, IconButton, Checkbox, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import AddPriceDialog from './AddPriceDialog';
 
 const Price = () => {
@@ -15,10 +14,11 @@ const Price = () => {
     const [error, setError] = useState(null);
     const [nextPage, setNextPage] = useState(null);
     const [previousPage, setPreviousPage] = useState(null);
-    const [openDialog, setOpenDialog] = useState(false); // State for controlling the dialog
-    const [currentProduct, setCurrentProduct] = useState(null); // To hold the current product data for editing
-    const [price, setPrice] = useState(''); // New price input field
-    const [quotePrice, setQuotePrice] = useState(''); // New quoted price input field
+    const [openDialog, setOpenDialog] = useState(false);
+    const [editDialog, setEditDialog] = useState(false);
+    const [currentProduct, setCurrentProduct] = useState(null);
+    const [price, setPrice] = useState('');
+    const [quotePrice, setQuotePrice] = useState('');
 
 
     const accessToken = localStorage.getItem('access_token'); // Assuming token is stored in localStorage
@@ -63,7 +63,7 @@ const Price = () => {
     const handleSelectProduct = (productId) => {
         setSelectedProducts(prevState => {
             if (prevState.includes(productId)) {
-                return prevState.filter(id => id !== productId);  // Unselect product if already selected
+                return prevState.filter(id => id !== productId);  
             } else {
                 return [...prevState, productId];  // Select product
             }
@@ -145,7 +145,7 @@ const Price = () => {
         setCurrentProduct(product);
         setPrice(product.price);  // Prepopulate the price field
         setQuotePrice(product.quoted_price);  // Prepopulate the quoted price field
-        setOpenDialog(true); // Open the dialog
+        setEditDialog(true); // Open the dialog
     };
 
     // Handle the form submission to update the product price
@@ -168,17 +168,17 @@ const Price = () => {
 
         try {
             const response = await axios.put('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', {
+                request_id: currentProduct.id,  // The product ID to be updated
+                price: parseFloat(price),  // New price value
+                quote_price: parseFloat(quotePrice),  // New quoted price value
+            }, {
                 headers: {
-                    Authorization: `Bearer ${accessToken}`,
+                    Authorization: `Bearer ${accessToken}`, // Attach token for authentication
                 },
-                data: {
-                    request_id: currentProduct.id,  // The product ID to be updated
-                    price: parseFloat(price),  // New price value
-                    quote_price: parseFloat(quotePrice),  // New quoted price value
-                }
             });
 
             if (response.data.status === 'success') {
+                setEditDialog(false);
                 Swal.fire({
                     title: 'Success!',
                     text: response.data.message || 'Product updated successfully!',
@@ -186,9 +186,9 @@ const Price = () => {
                     timer: 2000,
                     showConfirmButton: false,
                 });
-                fetchProductData();  // Refresh the data after update
-                setOpenDialog(false);  // Close the dialog
+                fetchProductData();
             } else {
+                setEditDialog(false);
                 Swal.fire({
                     title: 'Error!',
                     text: response.data.message || 'Failed to update product.',
@@ -227,7 +227,7 @@ const Price = () => {
                     className="w-full md:w-1/2 sm:w-auto py-3"
                     color="primary"
                     variant="contained"
-                    onClick={handleOpenDialog} // Open the dialog
+                    onClick={handleOpenDialog}
                 >
                     Add Product Price
                 </Button>
@@ -254,7 +254,7 @@ const Price = () => {
                                         if (selectedProducts.length === productsData.length) {
                                             setSelectedProducts([]);  // Deselect all products
                                         } else {
-                                            setSelectedProducts(productsData.map(p => p.id));  // Select all products
+                                            setSelectedProducts(productsData.map(p => p.id));
                                         }
                                     }}
                                 />
@@ -314,8 +314,10 @@ const Price = () => {
             />
 
             {/* Edit Price Dialog */}
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-                <DialogTitle>Edit Product Price</DialogTitle>
+            {editDialog && <Dialog open={editDialog} onClose={() => setEditDialog(false)}>
+                <DialogTitle sx={{ marginBottom: 2 }} className='bg-[#00B251] text-white'>
+                    Edit Product Price
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Price"
@@ -335,10 +337,10 @@ const Price = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)} color="secondary">Cancel</Button>
+                    <Button onClick={() => setEditDialog(false)} color="secondary">Cancel</Button>
                     <Button onClick={handleUpdateProduct} color="primary">Save</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog>}
 
             <AddPriceDialog open={openDialog} onClose={handleCloseDialog} />
 

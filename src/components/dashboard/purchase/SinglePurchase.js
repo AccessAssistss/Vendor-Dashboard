@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Box, Button, Stepper, Step, StepLabel, I
 import { useParams } from 'react-router';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddPurchaseDialog from './AddPurchaseDialog';
+import AddPurchaseDialog from './AddQuotationDialog';
 
 const SinglePurchase = () => {
   const { request_code } = useParams();
@@ -15,6 +15,9 @@ const SinglePurchase = () => {
   const [editedProduct, setEditedProduct] = useState(null); // State for storing the edited product
   const [loading, setLoading] = useState(false); // Loading state
   const token = localStorage.getItem('access_token'); // Fetch token from localStorage
+
+  console.log(purchaseData);
+  
 
   const statusSteps = [
     { status: 'pending', label: 'Pending' },
@@ -199,7 +202,7 @@ const SinglePurchase = () => {
                       flexDirection: 'row',
                       gap: 1
                     }}>
-                      <IconButton
+                      {/* <IconButton
                         onClick={() => handleEditClick(product)}
                         sx={{ color: '#00B251' }}>
                         <EditIcon />
@@ -208,7 +211,7 @@ const SinglePurchase = () => {
                         // onClick={() => handleDeleteClick(product.id)} 
                         color="error" disabled={loading}>
                         <DeleteIcon />
-                      </IconButton>
+                      </IconButton> */}
                     </Box>
 
                     <Typography variant="body1" className="text-black mb-2">
@@ -235,7 +238,7 @@ const SinglePurchase = () => {
         </div>
 
         {/* Edit Dialog */}
-        <Dialog open={openEditDialog} onClose={handleDialogClose}>
+        {/* <Dialog open={openEditDialog} onClose={handleDialogClose}>
           <DialogTitle className='bg-[#00B251] text-white'>Edit Product</DialogTitle>
           <DialogContent className='mt-4'>
             <TextField
@@ -283,9 +286,9 @@ const SinglePurchase = () => {
               Save
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
-      {openDialog && <AddPurchaseDialog openDialog={openDialog} setOpenDialog={setOpenDialog} quotationData={purchaseData?.product_details}/>}
+      {openDialog && <AddPurchaseDialog openDialog={openDialog} setOpenDialog={setOpenDialog} quotationData={purchaseData?.product_details} requestCode={purchaseData?.request_code}/>}
     </>
   );
 };

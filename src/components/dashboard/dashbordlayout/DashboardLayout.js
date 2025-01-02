@@ -13,6 +13,7 @@ import SinglePurchase from '../purchase/SinglePurchase';
 import AddPrice from '../addprice/AddPrice';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Price from '../addprice/Price';
+import ViewQuotation from '../purchase/ViewQuotation';
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -156,8 +157,9 @@ const DashboardLayout = () => {
                       {/* <li>
                         <Button
                           onClick={() => {
+                            handleTabChange()
                             handleButtonClick('subItem2');
-                            navigate('/purchase/subitem2');
+                            navigate('/purchase/quotation');
                           }}
                           sx={{
                             display: 'flex',
@@ -174,7 +176,7 @@ const DashboardLayout = () => {
                             width: '200px',
                           }}
                         >
-                          View Purchase
+                          View Quotation
                         </Button>
                       </li> */}
                       {/* Add more sub-menu items as needed */}
@@ -252,6 +254,7 @@ const DashboardLayout = () => {
           {/* <Route path="/member" element={<MemberHome />} />
           <Route path="/memberdetail/:id" element={<MemberProfile />} /> */}
           <Route path="/purchase" element={<PurchaseHome />} />
+          <Route path="/purchase/quotation" element={<ViewQuotation />} />
           <Route path="/purchase/:request_code" element={<SinglePurchase />} />
           <Route path="/price" element={<Price />} />
 

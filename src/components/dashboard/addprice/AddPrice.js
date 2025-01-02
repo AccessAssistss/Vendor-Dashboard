@@ -10,8 +10,7 @@ import { Autocomplete, TextField, CircularProgress, Typography, FormControl, Inp
 const AddPrice = () => {
 
     const [products, setProducts] = useState([]);
-
-    const [submittedData, setSubmittedData] = useState([]);  // Ensure it's an empty array initially
+    const [submittedData, setSubmittedData] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [rows, setRows] = useState([{
@@ -24,11 +23,11 @@ const AddPrice = () => {
         price: '',
         quote_price: '',
     }]);
-    const [lastPage, setLastPage] = useState(false);  // To track if we've reached the last page of products
+    const [lastPage, setLastPage] = useState(false);
     const listInnerRef = useRef();
-    const scrollPositionRef = useRef(0); // To track scroll position
+    const scrollPositionRef = useRef(0);
 
-    // Fetch Products, Brands, and Vendors from API
+    // Fetch Products from API
     const fetchProducts = async (page) => {
         setLoading(true);
         try {
@@ -57,7 +56,6 @@ const AddPrice = () => {
         }
     };
 
-    // Handle scroll event to detect when user reaches the bottom
     const onScroll = () => {
         if (listInnerRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
@@ -72,7 +70,6 @@ const AddPrice = () => {
         }
     };
 
-    // Handle product selection change
     const handleProductChange = (index, value) => {
         const newRows = [...rows];
         newRows[index].selectedProduct = value;
@@ -84,7 +81,6 @@ const AddPrice = () => {
         setRows(newRows);
     };
 
-    // Handle quantity change
     const handleQuantityChange = (index, value) => {
         const newRows = [...rows];
         newRows[index].quantity = value;
@@ -102,14 +98,12 @@ const AddPrice = () => {
         setRows(newRows);
     };
 
-    // Handle variant change
     const handleVariantChange = (index, value) => {
         const newRows = [...rows];
         newRows[index].variant = value;
         setRows(newRows);
     };
 
-    // Handle brand change
     const handleBrandChange = (index, value) => {
         const newRows = [...rows];
         newRows[index].brand = value;
@@ -123,20 +117,45 @@ const AddPrice = () => {
             measurement: '',
             variant: '',
             category: '',
-            Brand: '',
-
+            brand: '',
+            price: '',
+            quote_price: '',
             quantityError: ''
         }]);
     };
 
-    // Handle delete row
     const handleDeleteRow = (index) => {
         const newRows = rows.filter((_, rowIndex) => rowIndex !== index);
         setRows(newRows);
     };
 
-    // Handle form submit
+    const validateFields = () => {
+        // Validate each row for required fields
+        for (let row of rows) {
+            if (!row.selectedProduct || !row.quantity || !row.price || !row.quote_price) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     const handleSubmit = async () => {
+        if (!validateFields()) {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'All fields are required. Please fill in all fields before submitting.',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                didOpen: () => {
+                    const swalElement = document.querySelector('.swal2-container');
+                    if (swalElement) {
+                        swalElement.style.zIndex = 1500;
+                    }
+                }
+            });
+            return;
+        }
+
         const productsData = rows.map(row => ({
             product_id: row.selectedProduct.product_id,
             category_id: row.selectedProduct?.category?.category_id,
@@ -158,11 +177,18 @@ const AddPrice = () => {
             });
 
             setSubmittedData(response.data.products);
+
             Swal.fire({
                 title: 'Success!',
                 text: 'Products have been submitted successfully.',
                 icon: 'success',
                 confirmButtonText: 'OK',
+                didOpen: () => {
+                    const swalElement = document.querySelector('.swal2-container');
+                    if (swalElement) {
+                        swalElement.style.zIndex = 1500;
+                    }
+                }
             });
         } catch (error) {
             console.error('Error submitting data:', error);
@@ -171,79 +197,17 @@ const AddPrice = () => {
                 text: 'There was an error submitting the products. Please try again.',
                 icon: 'error',
                 confirmButtonText: 'OK',
+                didOpen: () => {
+                    const swalElement = document.querySelector('.swal2-container');
+                    if (swalElement) {
+                        swalElement.style.zIndex = 1500;
+                    }
+                }
             });
         }
     };
 
-
-    // const handleEdit = async (requestId, updatedPrice, updatedQuotePrice) => {
-    //     const data = { request_id: requestId, price: updatedPrice, quote_price: updatedQuotePrice };
-
-    //     try {
-    //         await axios.put('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', data, {
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-    //                 'Content-Type': 'application/json',
-    //             },
-    //         });
-
-    //         // Show success alert
-    //         Swal.fire({
-    //             title: 'Success!',
-    //             text: 'Product has been updated successfully.',
-    //             icon: 'success',
-    //             confirmButtonText: 'OK',
-    //         });
-    //     } catch (error) {
-    //         console.error('Error editing product:', error);
-    //         // Show error alert
-    //         Swal.fire({
-    //             title: 'Error!',
-    //             text: 'There was an error editing the product. Please try again.',
-    //             icon: 'error',
-    //             confirmButtonText: 'OK',
-    //         });
-    //     }
-    // };
-
-
-    // // Handle Delete
-    // const handleDelete = async (ids) => {
-    //     try {
-    //         await axios.delete('https://apis.agrisarathi.com/vendor/AddGetDelUpdateProductsVendor', {
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             data: { ids },
-    //         });
-
-    //         setSubmittedData(prevData => prevData.filter(product => !ids.includes(product.product_id)));
-
-    //         // Show success alert
-    //         Swal.fire({
-    //             title: 'Deleted!',
-    //             text: 'Product(s) have been deleted successfully.',
-    //             icon: 'success',
-    //             confirmButtonText: 'OK',
-    //         });
-    //     } catch (error) {
-    //         console.error('Error deleting product:', error);
-    //         // Show error alert
-    //         Swal.fire({
-    //             title: 'Error!',
-    //             text: 'There was an error deleting the product(s). Please try again.',
-    //             icon: 'error',
-    //             confirmButtonText: 'OK',
-    //         });
-    //     }
-    // };
-
-
-
-
     useEffect(() => {
-
         fetchProducts(page);
     }, []);
 
@@ -255,11 +219,10 @@ const AddPrice = () => {
 
     return (
         <div>
-            
             <div className="flex flex-col gap-4">
                 {rows.map((row, index) => (
-                    <div key={index} className="w-full flex flex-wrap gap-4 relative">
-                        <div className="w-full p-4 bg-gray-50 rounded-lg shadow-md relative">
+                    <div key={index} className="w-full flex flex-wrap gap-4 relative ">
+                        <div className="w-full p-4 bg-gray-50 rounded-lg shadow-md relative ">
                             {rows.length > 1 && (
                                 <IconButton
                                     onClick={() => handleDeleteRow(index)}
@@ -348,7 +311,7 @@ const AddPrice = () => {
                                         value={row.brand}
                                         onChange={(e) => handleBrandChange(index, e.target.value)}
                                         label="Brand"
-                                        disabled={!row.selectedProduct}  // Only enable when a product is selected
+                                        disabled={!row.selectedProduct}
                                     >
                                         {row.selectedProduct?.brands?.map((brandOption) => (
                                             <MenuItem key={brandOption.brand_id} value={brandOption.brand_name}>
@@ -357,17 +320,20 @@ const AddPrice = () => {
                                         ))}
                                     </Select>
                                 </FormControl>
+
                                 <TextField
+                                    sx={{ marginTop: 1 }}
                                     label="Price"
                                     fullWidth
                                     value={row.price}
-                                    onChange={(e) => handleChange(index, 'price', e.target.value)}
+                                    onChange={(e) => handleChange(index, 'price', e.target.value.replace(/[^0-9.]/g, ''))}
                                 />
                                 <TextField
+                                    sx={{ marginTop: 1 }}
                                     label="Quote Price"
                                     fullWidth
                                     value={row.quote_price}
-                                    onChange={(e) => handleChange(index, 'quote_price', e.target.value)}
+                                    onChange={(e) => handleChange(index, 'quote_price', e.target.value.replace(/[^0-9.]/g, ''))}
                                 />
                             </div>
                         </div>
@@ -381,7 +347,6 @@ const AddPrice = () => {
                     <Button onClick={handleSubmit}>Submit</Button>
                 </div>
             </div>
-
         </div>
     );
 };

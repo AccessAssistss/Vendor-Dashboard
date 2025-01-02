@@ -3,7 +3,18 @@ import AddPrice from './AddPrice';  // Assuming AddPrice is in the same director
 
 const AddPriceDialog = ({ open, onClose }) => {
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
+        <Dialog open={open} onClose={onClose}
+         fullWidth maxWidth="lg"
+         sx={{
+            '& .MuiDialog-paper': {
+                width: '100%',
+                maxWidth: '95%',
+                height: '100%',
+                maxHeight: '85%',
+                margin: 'auto',
+            },
+        }}
+         >
             <DialogTitle sx={{ marginBottom: 2 }} className='bg-[#00B251] text-white'>
                 Add Product Price
             </DialogTitle>
